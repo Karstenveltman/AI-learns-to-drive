@@ -2,7 +2,8 @@ function newGeneration() {
     if (alldead == true) {
         for (car of cars) {
             if (car.totalcheckpoints > best) {
-                best = car.checkpoints;
+                best = car.totalcheckpoints;
+                console.log(best);
                 bestcar = car;
             }
         }

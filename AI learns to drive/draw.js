@@ -34,21 +34,38 @@ function setup() {
   checkpoints.push(new Checkpoint(500, 100, 500, 200));
   checkpoints.push(new Checkpoint(600, 300, 700, 300));
   checkpoints.push(new Checkpoint(600, 400, 700, 500));
+  checkpoints.push(new Checkpoint(450, 350, 500, 450));
   checkpoints.push(new Checkpoint(300, 300, 300, 400));
-  checkpoints.push(new Checkpoint(200, 100, 200, 200));
   checkpoints.push(new Checkpoint(200, 200, 100, 200));
+  checkpoints.push(new Checkpoint(200, 100, 200, 200));
 }
 
 function draw() {
   background(bc);
 
   newGeneration()
+  
+  stroke(0)
+
+  fill(0)
+  rect(200, 100, 20, 20);
+  rect(220, 120, 20, 20);
+  rect(200, 140, 20, 20);
+  rect(220, 160, 20, 20);
+  rect(200, 180, 20, 20);
+
+  fill(255)
+  rect(220, 100, 20, 20);
+  rect(200, 120, 20, 20);
+  rect(220, 140, 20, 20);
+  rect(200, 160, 20, 20);
+  rect(220, 180, 20, 20);
 
   for (let wall of walls) {
     wall.display();
   }
-  for (let checkpoint of checkpoints) {
-    checkpoint.display();
+  for (i = 0; i < checkpoints.length - 1; i++) {
+    checkpoints[i].display();
   }
   for (car of cars) {
     car.display();
@@ -59,7 +76,7 @@ function draw() {
     }
 
     car.checkpointcalc(checkpoints[car.checkpoints]);
-    if (car.checkpoints == 6){
+    if (car.checkpoints == 7){
       car.checkpoints = 0;
     }
     

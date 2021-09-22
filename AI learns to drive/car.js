@@ -41,7 +41,7 @@ class Car {
     if (brain instanceof NeuralNetwork) {
       this.brain = brain.copy();
       if (keepbrain != true) {
-        this.brain.mutate(0.5);
+        this.brain.mutate(0.1);
       }
     }
     else {
@@ -86,18 +86,22 @@ class Car {
 
   display() {
     if (this.caralive == true) {
-      if (car.timealive >= 300) {
+      if (car.timealive >= 120) {
         car.caralive = false;
         cardeadcount++;
       }
       this.timealive++;
       fill(0);
-      stroke(rgb)
+      stroke(255, 41, 41)
       push()
-      fill(255,0, 0);
-      translate(this.xPos, this.yPos)
-      rectMode(CENTER)
+      fill(255, 41, 41);
+      translate(this.xPos, this.yPos);
+      rectMode(CENTER);
+      textSize(10);
+      text(this.totalcheckpoints, -25, -15);
+      stroke(rgb)
       rotate(this.angle)
+      fill(255, 0, 0);
       rect(0, 0, this.xLength, this.yLength);
       fill(255, 255, 255)
       rect(this.xLength/2.666, 0, this.xLength/5, this.yLength*0.8)
