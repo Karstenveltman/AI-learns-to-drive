@@ -1,6 +1,17 @@
+// function mutate(x) {
+//   if (random(1) < 0.1) {
+//     let offset = randomGaussian() * 0.5;
+//     let newx = x + offset;
+//     return newx;
+//   } 
+//   else {
+//     return x;
+//   }
+// }
+
 
 class Car {
-  constructor(xLength, yLength, xPos, yPos, angle, speed, up, down){
+  constructor(xLength, yLength, xPos, yPos, angle, speed, up, down, brain, keepbrain){
     this.xLength = xLength
     this.yLength = yLength
     this.xPos = xPos;
@@ -24,8 +35,20 @@ class Car {
     this.carmoving = 0;
     this.distances = [];
     this.checkpoints = 0;
+    this.totalcheckpoints = 0;
+    this.timealive = 0;
     
-    this.brain = new NeuralNetwork(10, 10, 2);
+    if (brain instanceof NeuralNetwork) {
+      this.brain = brain.copy();
+      if (keepbrain != true) {
+        this.brain.mutate(0.5);
+      }
+    }
+    else {
+      this.brain = new NeuralNetwork(10, 10, 2);
+    }
+
+
 
     for (let i = 0; i < this.totalrays; i += 1) {
       this.rays.push(new Ray(this.xPos, this.yPos, this.angle));
@@ -63,6 +86,11 @@ class Car {
 
   display() {
     if (this.caralive == true) {
+      if (car.timealive >= 300) {
+        car.caralive = false;
+        cardeadcount++;
+      }
+      this.timealive++;
       fill(0);
       stroke(rgb)
       push()
@@ -74,6 +102,7 @@ class Car {
       fill(255, 255, 255)
       rect(this.xLength/2.666, 0, this.xLength/5, this.yLength*0.8)
       pop()
+      
     }
   }
 
@@ -98,7 +127,7 @@ class Car {
         }
         if (closest) {
           stroke(240);
-          line(this.xPos, this.yPos, closest.x, closest.y);
+          // line(this.xPos, this.yPos, closest.x, closest.y);
           this.distances[i] = distance;
         }
       }
@@ -139,9 +168,11 @@ class Car {
       
       if (0 < t1 && t1 < 1 && u1 > 0 && u1 < 1) {
         this.caralive = false;
+        cardeadcount++;
       }
       else if (0 < t2 && t2 < 1 && u2 > 0 && u2 < 1){
         this.caralive = false;
+        cardeadcount++;
       }
     }
   }
@@ -180,11 +211,14 @@ class Car {
       
       if (0 < t1 && t1 < 1 && u1 > 0 && u1 < 1) {
         this.checkpoints++
-        console.log(this.checkpoints)
+        this.totalcheckpoints++;
+        this.timealive = 0;
 
       }
       else if (0 < t2 && t2 < 1 && u2 > 0 && u2 < 1){
         this.checkpoints++
+        this.totalcheckpoints++;
+        this.timealive = 0;
       }
     }
   }

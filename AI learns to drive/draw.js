@@ -6,9 +6,11 @@ var turnspeed = 3;
 var walls = [];
 var cars = [];
 var checkpoints = [];
-var TOTAL = 100;
+var TOTAL = 1000;
 var cardeadcount = 0;
 var alldead = false;
+var best = 0;
+var bestcar;
 
 function setup() {
   angleMode(DEGREES)
@@ -40,6 +42,8 @@ function setup() {
 function draw() {
   background(bc);
 
+  newGeneration()
+
   for (let wall of walls) {
     wall.display();
   }
@@ -55,16 +59,15 @@ function draw() {
     }
 
     car.checkpointcalc(checkpoints[car.checkpoints]);
+    if (car.checkpoints == 6){
+      car.checkpoints = 0;
+    }
     
     car.think();
     car.move()
+
   }
 
-  for (car in cars) {
-    if (car.caralive == false) {
-      cardeadcount++
-    }
-  }
 
   if (cardeadcount == TOTAL) {
     alldead = true;
