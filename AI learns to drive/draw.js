@@ -12,12 +12,19 @@ var alldead = false;
 var best = 0;
 var bestcar;
 
+function killthem(){
+  alldead = true;
+}
+
 function setup() {
   angleMode(DEGREES)
   for (i = 0; i < TOTAL; i ++) {
-    cars[i] = new Car(20, 10, 350, 150, 0, 4, 83, 87);
+    cars[i] = new Car(20, 10, 250, 150, 0, 4, 83, 87, false, "black");
   }
+
   createCanvas(xSize, ySize); 
+  let killButton = select('#kill');
+  killButton.mousePressed(killthem);
   
   walls.push(new Wall(100, 100, 500, 100)); 
   walls.push(new Wall(200, 200, 500, 200));
@@ -31,40 +38,42 @@ function setup() {
   walls.push(new Wall(300, 300, 200, 200));
   walls.push(new Wall(300, 400, 100, 200));
 
-  checkpoints.push(new Checkpoint(500, 100, 500, 200));
+  checkpoints.push(new Checkpoint(500, 200, 500, 100));
   checkpoints.push(new Checkpoint(600, 300, 700, 300));
   checkpoints.push(new Checkpoint(600, 400, 700, 500));
   checkpoints.push(new Checkpoint(450, 350, 500, 450));
   checkpoints.push(new Checkpoint(300, 300, 300, 400));
   checkpoints.push(new Checkpoint(200, 200, 100, 200));
-  checkpoints.push(new Checkpoint(200, 100, 200, 200));
+  checkpoints.push(new Checkpoint(200, 200, 200, 100));
+  
 }
 
 function draw() {
   background(bc);
 
-  newGeneration()
+  newGeneration();
   
-  stroke(0)
 
-  fill(0)
-  rect(200, 100, 20, 20);
-  rect(220, 120, 20, 20);
-  rect(200, 140, 20, 20);
-  rect(220, 160, 20, 20);
-  rect(200, 180, 20, 20);
-
-  fill(255)
-  rect(220, 100, 20, 20);
-  rect(200, 120, 20, 20);
-  rect(220, 140, 20, 20);
-  rect(200, 160, 20, 20);
-  rect(220, 180, 20, 20);
+  stroke(0);
+  fill(255);
+  rect(300, 100, 20, 100);
+  stroke(0);
+  fill(0);
+  rect(300, 100, 10, 10);
+  rect(310, 110, 10, 10);
+  rect(300, 120, 10, 10);
+  rect(310, 130, 10, 10);
+  rect(300, 140, 10, 10);
+  rect(310, 150, 10, 10);
+  rect(300, 160, 10, 10);
+  rect(310, 170, 10, 10);
+  rect(300, 180, 10, 10);
+  rect(310, 190, 10, 10);
 
   for (let wall of walls) {
     wall.display();
   }
-  for (i = 0; i < checkpoints.length - 1; i++) {
+  for (i = 0; i < checkpoints.length; i++) {
     checkpoints[i].display();
   }
   for (car of cars) {
@@ -76,7 +85,7 @@ function draw() {
     }
 
     car.checkpointcalc(checkpoints[car.checkpoints]);
-    if (car.checkpoints == 7){
+    if (car.checkpoints == checkpoints.length){
       car.checkpoints = 0;
     }
     
@@ -87,7 +96,7 @@ function draw() {
 
 
   if (cardeadcount == TOTAL) {
-    alldead = true;
+    killthem();
   }
 
   if (keyIsDown(82)){

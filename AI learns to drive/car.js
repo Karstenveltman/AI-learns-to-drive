@@ -1,17 +1,5 @@
-// function mutate(x) {
-//   if (random(1) < 0.1) {
-//     let offset = randomGaussian() * 0.5;
-//     let newx = x + offset;
-//     return newx;
-//   } 
-//   else {
-//     return x;
-//   }
-// }
-
-
 class Car {
-  constructor(xLength, yLength, xPos, yPos, angle, speed, up, down, brain, keepbrain){
+  constructor(xLength, yLength, xPos, yPos, angle, speed, up, down, keepbrain, color, brain){
     this.xLength = xLength
     this.yLength = yLength
     this.xPos = xPos;
@@ -36,7 +24,10 @@ class Car {
     this.distances = [];
     this.checkpoints = 0;
     this.totalcheckpoints = 0;
+    this.distcheckpoint = 0;
+    this.fitness = 0;
     this.timealive = 0;
+    this.color = color;
     
     if (brain instanceof NeuralNetwork) {
       this.brain = brain.copy();
@@ -47,8 +38,6 @@ class Car {
     else {
       this.brain = new NeuralNetwork(10, 10, 2);
     }
-
-
 
     for (let i = 0; i < this.totalrays; i += 1) {
       this.rays.push(new Ray(this.xPos, this.yPos, this.angle));
@@ -91,22 +80,20 @@ class Car {
         cardeadcount++;
       }
       this.timealive++;
-      fill(0);
-      stroke(255, 41, 41)
+      stroke(this.color)
       push()
-      fill(255, 41, 41);
+      fill(this.color);
       translate(this.xPos, this.yPos);
       rectMode(CENTER);
       textSize(10);
       text(this.totalcheckpoints, -25, -15);
-      stroke(rgb)
-      rotate(this.angle)
-      fill(255, 0, 0);
+      stroke(rgb);
+      rotate(this.angle);
       rect(0, 0, this.xLength, this.yLength);
       fill(255, 255, 255)
       rect(this.xLength/2.666, 0, this.xLength/5, this.yLength*0.8)
       pop()
-      
+      this.fitness = this.totalcheckpoints + 10/this.distcheckpoint;
     }
   }
 
@@ -183,19 +170,10 @@ class Car {
 
   checkpointcalc(checkpoint) {
     if (this.caralive == true) {
-      this.carx1 = this.xPos + cos(this.angle + atan(5/10)) * sqrt(125);
-      this.cary1 = this.yPos + sin(this.angle + atan(5/10)) * sqrt(125);
-
-      this.carx4 = this.xPos + cos(this.angle - atan(5/10)) * sqrt(125);
-      this.cary4 = this.yPos + sin(this.angle - atan(5/10)) * sqrt(125);
-
-      this.carx3 = this.xPos - cos(this.angle + atan(5/10)) * sqrt(125);
-      this.cary3 = this.yPos - sin(this.angle + atan(5/10)) * sqrt(125);
-
-      this.carx2 = this.xPos - cos(this.angle - atan(5/10)) * sqrt(125);
-      this.cary2 = this.yPos - sin(this.angle - atan(5/10)) * sqrt(125);
       const x1 = checkpoint.point1.x;
       const y1 = checkpoint.point1.y;
+      const x7= checkpoint.point3.x;
+      const y7 = checkpoint.point3.y;
       const x2 = checkpoint.point2.x;
       const y2 = checkpoint.point2.y;
 
@@ -208,22 +186,40 @@ class Car {
       const x6 = this.carx4;
       const y6 = this.cary4;
 
-      const t1 = ((x1 - x3) * (y3 - y4) - (y1 - y3) * (x3 - x4)) / ((x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4));
-      const u1 = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / ((x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4));
-      const t2 = ((x1 - x5) * (y5 - y6) - (y1 - y5) * (x5 - x6)) / ((x1 - x2) * (y5 - y6) - (y1 - y2) * (x5 - x6));
-      const u2 = ((x2 - x1) * (y1 - y5) - (y2 - y1) * (x1 - x5)) / ((x1 - x2) * (y5 - y6) - (y1 - y2) * (x5 - x6));
+      const t1 = Lineintersection_t(x1, y1, x7, y7, x3, y3, x4, y4);
+      const u1 = Lineintersection_u(x1, y1, x7, y7, x3, y3, x4, y4);
+      const t2 = Lineintersection_t(x1, y1, x7, y7, x5, y5, x6, y6);
+      const u2 = Lineintersection_u(x1, y1, x7, y7, x5, y5, x6, y6);
       
+      const t3 = Lineintersection_t(x7, y7, x2, y2, x3, y3, x4, y4);
+      const u3 = Lineintersection_u(x7, y7, x2, y2, x3, y3, x4, y4);
+      const t4 = Lineintersection_t(x7, y7, x2, y2, x5, y5, x6, y6);
+      const u4 = Lineintersection_u(x7, y7, x2, y2, x5, y5, x6, y6);
+      
+
       if (0 < t1 && t1 < 1 && u1 > 0 && u1 < 1) {
+        this.checkpoints++
+        this.totalcheckpoints += 2;
+        this.timealive = 0;
+      }
+      else if (0 < t2 && t2 < 1 && u2 > 0 && u2 < 1){
+        this.checkpoints++
+        this.totalcheckpoints += 2;
+        this.timealive = 0;
+      }
+
+      else if (0 < t3 && t3 < 1 && u3 > 0 && u3 < 1) {
         this.checkpoints++
         this.totalcheckpoints++;
         this.timealive = 0;
 
       }
-      else if (0 < t2 && t2 < 1 && u2 > 0 && u2 < 1){
+      else if (0 < t4 && t4 < 1 && u4 > 0 && u4 < 1){
         this.checkpoints++
         this.totalcheckpoints++;
         this.timealive = 0;
       }
+      this.distcheckpoint = dist(this.xPos, this.yPos, checkpoint.point3.x, checkpoint.point3.y);
     }
   }
 

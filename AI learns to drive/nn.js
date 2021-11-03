@@ -169,9 +169,10 @@ class NeuralNetwork {
 
         // function to mutate each value by
         function mutate_fn(val) {
-            let x = Math.random();
+            let x = random();
             if (x < rate) {
-                return x * 2 - 1;
+                let offset = randomGaussian(0, 0.5);
+                return val + offset;
             }
             return val;
         }
