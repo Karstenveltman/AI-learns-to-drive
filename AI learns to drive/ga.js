@@ -19,6 +19,7 @@ function newGeneration() {
         }
         cars[TOTAL-1] = new Car(20, 10, 250, 150, 0, 4, 83, 87, true, "red", bestcar.brain);
         cardeadcount = 0;
+        gen ++;
         alldead = false;
     }
 }

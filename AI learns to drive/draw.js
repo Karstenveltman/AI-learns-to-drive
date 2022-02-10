@@ -6,13 +6,15 @@ var turnspeed = 9;
 var walls = [];
 var cars = [];
 var checkpoints = [];
-var TOTAL = 1000;
+var TOTAL = 100;
 var cardeadcount = 0;
 var notimproving = 0;
 var alldead = false;
 var showrays = false;
 var best = 0;
 var bestcar;
+var carcount = TOTAL - cardeadcount;
+var gen = 1;
 
 function killthem(){
   alldead = true;
@@ -49,9 +51,12 @@ function draw() {
 
   finishflag()
 
+  carcount = TOTAL - cardeadcount;
   newGeneration();
-  text("frame rate: " + round(frameRate()), 20, 50)
-  text("highscore: " + round(best), 20, 60)
+  text("frame rate: " + round(frameRate()), 20, 50);
+  text("highscore: " + round(best), 20, 60);
+  text("cars: " + carcount, 20, 70);
+  text("generation: " + gen, 20, 80);
 
   for (let wall of walls) {
     wall.display();
