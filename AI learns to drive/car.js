@@ -9,7 +9,7 @@ class Car {
     this.up = up;
     this.down = down;
     this.rays = []
-    this.totalrays = 5;
+    this.totalrays = 21;
     this.fov = 180;
     this.carx1;
     this.carx2;
